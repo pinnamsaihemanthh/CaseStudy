@@ -1,0 +1,9 @@
+server:
+  port: 8000
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://pinnamsaihemanth:green@cluster0.z6cji.mongodb.net/admins?retryWrites=true&w=majority
+  application:
+    name: ADMIN-SERVICE
