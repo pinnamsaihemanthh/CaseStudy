@@ -1,0 +1,12 @@
+server:
+  port: 8090
+  
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://pinnamsaihemanth:green@cluster0.z6cji.mongodb.net/User?retryWrites=true&w=majority
+      
+  application:
+    name: CUSTOMER-SERVICE
+    
+  
