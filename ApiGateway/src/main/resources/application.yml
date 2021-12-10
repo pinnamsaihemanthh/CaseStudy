@@ -1,0 +1,20 @@
+server:
+  port: 8002
+  
+zuul:
+    routes:
+     ADMIN-SERVICE:
+      url: http://localhost:8000
+     ORDER-SERVICE:
+      url: http://localhost:8082
+     CUSTOMER-SERVICE:
+      url: http://localhost:8090
+     WASHER-SERVICE:
+      url: http://localhost:8003 
+     PAYMENT-SERVICE:
+      url: http://localhost:8004 
+     
+     
+       
+
+     
