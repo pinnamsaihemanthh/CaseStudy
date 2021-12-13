@@ -20,6 +20,7 @@ import com.ondemandcarwash.exception.ApiRequestException;
 import com.ondemandcarwash.model.Customer;
 import com.ondemandcarwash.model.Order;
 import com.ondemandcarwash.model.PaymentModel;
+import com.ondemandcarwash.model.Ratings;
 import com.ondemandcarwash.repository.CustomerRepository;
 import com.ondemandcarwash.service.CustomerService;
 
@@ -118,20 +119,35 @@ public class CustomerController {
 		return restTemplate.postForObject("http://localhost:8004/payment", payment, String.class);
 
 	}
-	//Reading All orders
-		@GetMapping("/getallorders")
-		@ApiOperation("Getting all the Orders")
-		public String getAllOrder() {
-			return restTemplate.getForObject("http://localhost:8082/Order/allorders", String.class);
 
-		}
+	// Reading All orders
+	@GetMapping("/getallorders")
+	@ApiOperation("Getting all the Orders")
+	public String getAllOrder() {
+		return restTemplate.getForObject("http://localhost:8082/Order/allorders", String.class);
 
-	//Reading all the Ratings
-		@GetMapping("/ratings")
-		@ApiOperation("Getting all the Ratings")
-		public String getAllRatings() {
-			return restTemplate.getForObject("http://localhost:8000/Admin/allratings", String.class);
-		}
+	}
 
+	// for adding ratings
+	@PostMapping("/addratings")
+	@ApiOperation("adding rating")
+	public String addratings(@RequestBody Ratings ratings) {
+		return restTemplate.postForObject("http://localhost:8000/Admin/addratings", ratings, String.class);
+
+	}
+
+	// Reading all the Ratings
+	@GetMapping("/ratings")
+	@ApiOperation("Getting all the Ratings")
+	public String getAllRatings() {
+		return restTemplate.getForObject("http://localhost:8000/Admin/allratings", String.class);
+	}
+
+	// Reading all the waskpacks
+	@GetMapping("/washpack")
+	@ApiOperation("Getting all the washpack")
+	public String getAllPacks() {
+		return restTemplate.getForObject("http://localhost:8000/Admin/allpacks", String.class);
+	}
 
 }
