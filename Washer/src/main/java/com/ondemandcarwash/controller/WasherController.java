@@ -6,6 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.ondemandcarwash.exception.ApiRequestException;
+import com.ondemandcarwash.model.AuthenticationRequest;
+import com.ondemandcarwash.model.AuthenticationResponse;
 import com.ondemandcarwash.model.Washer;
 import com.ondemandcarwash.repository.WasherRepository;
 import com.ondemandcarwash.service.WasherService;
+import com.ondemandcarwash.util.JwtUtil;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -34,6 +40,50 @@ public class WasherController {
 
 	@Autowired
 	private WasherRepository washerRepository;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private JwtUtil jwtUtil;
+
+	// To Subscribe to the green car wash like register
+
+	@PostMapping("/subs")
+	private ResponseEntity<?> subscibeCustomer(@RequestBody AuthenticationRequest authenticationRequest) {
+		String username = authenticationRequest.getUsername();
+		String password = authenticationRequest.getPassword();
+		Washer washer = new Washer();
+		washer.setUsername(username);
+		washer.setPassword(password);
+		try {
+			washerRepository.save(washer);
+		} catch (Exception e) {
+			return ResponseEntity.ok(new AuthenticationResponse("Error creating user with username: " + username));
+		}
+		return ResponseEntity.ok(new AuthenticationResponse("Created user with username: " + username));
+	}
+
+	// For authentication
+	@PostMapping("/auth")
+	private ResponseEntity<?> authenticateCustomer(@RequestBody AuthenticationRequest authenticationRequest) {
+		String username = authenticationRequest.getUsername();
+		String password = authenticationRequest.getPassword();
+
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		} catch (Exception e) {
+			return ResponseEntity.ok(new AuthenticationResponse("No user found with username: " + username));
+		}
+
+		UserDetails loadedUser = washerService.loadUserByUsername(username);
+		String generatedToken = jwtUtil.generateToken(loadedUser);
+
+		return ResponseEntity.ok(new AuthenticationResponse(generatedToken));
+
+		// return ResponseEntity.ok(new AuthenticationResponse("Successful
+		// Authentication for user"+ username));
+	}
 
 	// Creating/Adding Washer
 	@PostMapping("/addwasher")

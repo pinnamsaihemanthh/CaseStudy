@@ -5,80 +5,87 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "washers")
 public class Washer {
-	
+
 	@Id
-	private int wId;
-	private String wName;
-	private String wEmail;
-	private String wPhone;
-	private String wAddress;
-	private String wPassword;
-	
-	
-	//No parameter Constructor or default constructor
+	private int Id;
+	private String username;
+	private String email;
+	private String phone;
+	private String address;
+	private String password;
+
+	// No parameter Constructor or default constructor
 	public Washer() {
-		
+
 	}
-	
-	//to string 
+
+	// to string
 	@Override
 	public String toString() {
-		return "Washer [wId=" + wId + ", wName=" + wName + ", wEmail=" + wEmail + ", wPhone=" + wPhone + ", wAddress="
-				+ wAddress + ", wPassword=" + wPassword + "]";
+		return "Washer [Id=" + Id + ", username=" + username + ", email=" + email + ", phone=" + phone + ", address="
+				+ address + ", password=" + password + "]";
 	}
-	
-	//parameterised constructor
-	public Washer(int wId, String wName, String wEmail, String wPhone, String wAddress, String wPassword) {
+
+	// parameterised constructor
+
+	public Washer(int id, String username, String email, String phone, String address, String password) {
 		super();
-		this.wId = wId;
-		this.wName = wName;
-		this.wEmail = wEmail;
-		this.wPhone = wPhone;
-		this.wAddress = wAddress;
-		this.wPassword = wPassword;
+		Id = id;
+		this.username = username;
+		this.email = email;
+		this.phone = phone;
+		this.address = address;
+		this.password = password;
 	}
-	
-	//getters and setters
-	
-	public int getwId() {
-		return wId;
+
+	// getters and setters
+
+	public int getId() {
+		return Id;
 	}
-	public void setwId(int wId) {
-		this.wId = wId;
+
+	public void setId(int id) {
+		Id = id;
 	}
-	public String getwName() {
-		return wName;
+
+	public String getUsername() {
+		return username;
 	}
-	public void setwName(String wName) {
-		this.wName = wName;
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public String getwEmail() {
-		return wEmail;
+
+	public String getEmail() {
+		return email;
 	}
-	public void setwEmail(String wEmail) {
-		this.wEmail = wEmail;
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
-	public String getwPhone() {
-		return wPhone;
+
+	public String getPhone() {
+		return phone;
 	}
-	public void setwPhone(String wPhone) {
-		this.wPhone = wPhone;
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
-	public String getwAddress() {
-		return wAddress;
+
+	public String getAddress() {
+		return address;
 	}
-	public void setwAddress(String wAddress) {
-		this.wAddress = wAddress;
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
-	public String getwPassword() {
-		return wPassword;
+
+	public String getPassword() {
+		return password;
 	}
-	public void setwPassword(String wPassword) {
-		this.wPassword = wPassword;
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	
-	
-	
-	
 
 }

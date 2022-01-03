@@ -9,4 +9,6 @@ spring:
   application:
     name: CUSTOMER-SERVICE
     
-  
+  cloud:
+    compatibility-verifier:
+      enabled: false

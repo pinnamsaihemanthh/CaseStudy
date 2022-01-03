@@ -6,6 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.ondemandcarwash.Service.AdminService;
 import com.ondemandcarwash.exception.ApiRequestException;
 import com.ondemandcarwash.models.Admin;
+import com.ondemandcarwash.models.AuthenticationRequest;
+import com.ondemandcarwash.models.AuthenticationResponse;
 import com.ondemandcarwash.models.Order;
 import com.ondemandcarwash.models.Ratings;
 import com.ondemandcarwash.models.WashPack;
@@ -24,9 +31,12 @@ import com.ondemandcarwash.models.Washer;
 import com.ondemandcarwash.repository.AdminRepository;
 import com.ondemandcarwash.repository.RatingRepository;
 import com.ondemandcarwash.repository.WashPackRepository;
+import com.ondemandcarwash.util.JwtUtil;
 
 import io.swagger.annotations.ApiOperation;
 
+
+@CrossOrigin("http://localhost:4200")
 @RestController
 @RequestMapping("/Admin")
 public class AdminController {
@@ -41,14 +51,61 @@ public class AdminController {
 	private WashPackRepository washPackRepository;
 
 	@Autowired
+	private AdminService adminService;
+
+	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private JwtUtil jwtUtil;
+
+	// To Subscribe to the green car wash like register
+
+	@PostMapping("/subs")
+	private ResponseEntity<?> subscibeCustomer(@RequestBody AuthenticationRequest authenticationRequest) {
+		String username = authenticationRequest.getUsername();
+		String password = authenticationRequest.getPassword();
+		Admin admin = new Admin();
+		admin.setUsername(username);
+		admin.setPassword(password);
+		try {
+			adminRepository.save(admin);
+		} catch (Exception e) {
+			return ResponseEntity.ok(new AuthenticationResponse("Error creating user with username: " + username));
+		}
+		return ResponseEntity.ok(new AuthenticationResponse("Created user with username: " + username));
+	}
+
+	// For authentication
+	@PostMapping("/auth")
+	private ResponseEntity<?> authenticateCustomer(@RequestBody AuthenticationRequest authenticationRequest) {
+		String username = authenticationRequest.getUsername();
+		String password = authenticationRequest.getPassword();
+
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		} catch (Exception e) {
+			return ResponseEntity.ok(new AuthenticationResponse("No user found with username: " + username));
+		}
+
+		UserDetails loadedUser = adminService.loadUserByUsername(username);
+		String generatedToken = jwtUtil.generateToken(loadedUser);
+
+		return ResponseEntity.ok(new AuthenticationResponse(generatedToken));
+
+		// return ResponseEntity.ok(new AuthenticationResponse("Successful
+		// Authentication for user"+ username));
+	}
 
 //Adding Admin
 	@PostMapping("/addadmin")
 	@ApiOperation("adding a admin")
 	public String saveAdmin(@RequestBody Admin admin) {
 		adminRepository.save(admin);
-		return "Admin Saved Successfully with id:" + admin.getaId();
+		return "Admin Saved Successfully with id:" + admin.getId();
 	}
 
 //Reading All admin
@@ -161,14 +218,14 @@ public class AdminController {
 	@GetMapping("/getallorders/{id}")
 	@ApiOperation("reading order with id")
 	public Order getOrderById(@PathVariable("id") int id) {
-		return restTemplate.getForObject("http://localhost:8083/order/orders/" + id, Order.class);
+		return restTemplate.getForObject("http://localhost:8082/order/orders/" + id, Order.class);
 	}
 
 //Reading All orders
 	@GetMapping("/getallorders")
 	@ApiOperation("reading all orders")
 	public String getallOrder() {
-		return restTemplate.getForObject("http://localhost:8083/order/allorders", String.class);
+		return restTemplate.getForObject("http://localhost:8082/order/allorders", String.class);
 	}
 
 	// Reading All customers

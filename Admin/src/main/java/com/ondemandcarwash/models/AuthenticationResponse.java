@@ -1,4 +1,4 @@
-package com.ondemandcarwash.model;
+package com.ondemandcarwash.models;
 
 public class AuthenticationResponse {
 

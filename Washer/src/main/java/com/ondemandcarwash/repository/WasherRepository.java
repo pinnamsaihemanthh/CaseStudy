@@ -6,4 +6,5 @@ import com.ondemandcarwash.model.Washer;
 
 public interface WasherRepository extends MongoRepository<Washer, Integer> {
 
+	Washer findByUsername(String username);
 }

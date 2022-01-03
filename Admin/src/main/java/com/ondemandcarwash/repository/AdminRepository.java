@@ -6,4 +6,5 @@ import com.ondemandcarwash.models.Admin;
 
 public interface AdminRepository extends MongoRepository<Admin, Integer> {
 
+	Admin findByUsername(String username);
 }

@@ -6,7 +6,6 @@ import com.ondemandcarwash.model.Customer;
 
 public interface CustomerRepository extends MongoRepository<Customer, Integer>{
 	
-	
-
+Customer findByUsername(String username);
 
 }
